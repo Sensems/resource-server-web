@@ -18,17 +18,15 @@ jobs:
         run: |
           npm install
           npm run build
-          sudo cp -rf dist /root/build-dist
       - name: pull server-code
         run: |
-          sudo git clone https://github.com/Sensems/resource-server.git /root/resource-server
+          git clone https://github.com/Sensems/resource-server.git
           git checkout main
-          sudo rm -rf /root/resource-server/view/*
+          sudo rm -rf ./resource-server/view/*
       - name: move web build to server view
         run: |
-          sudo cp -rf /root/build-dist /root/resource-server/view
-          sudo su
-          cd /root/resource-server/view
+          sudo cp -rf ./resource-server-web/dist ./resource-server/view
+          cd ./resource-server
           git commit -m 'update web project'
           git push
     
