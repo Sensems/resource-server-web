@@ -21,7 +21,7 @@ jobs:
           sudo cp -rf dist /root/build-dist
       - name: pull server-code
         run: |
-          git clone https://github.com/Sensems/resource-server.git /root
+          git clone https://github.com/Sensems/resource-server.git /root/resource-server
           git checkout main
           sudo rm -rf /root/resource-server/view/*
       - name: move web build to server view
