@@ -1,0 +1,22 @@
+name: updata-web-engineering
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: switch node version
+        uses: actions/setup-node@v2.5.2
+        with:
+          node-version: 16.13.2
+      - name: checkout
+        uses: actions/checkout@v3.5.2
+      - name: npm install
+        run:
+          npm install
+      - name: npm build
+        run:
+          npm run build
