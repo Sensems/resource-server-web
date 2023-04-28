@@ -40,7 +40,7 @@ const OperationBar: FunctionComponent<OperationBarProps> = (props) => {
           href: `/view/${_arr.join('|')}`
         }
       })
-      setBreadcrumb([{ title: '根目录', href: '/' }].concat(arr))
+      setBreadcrumb([{ title: '根目录', href: '/view' }].concat(arr))
     }
     setSearchValue(getParams.getAll('search')[0] || '')
   }, [location])
