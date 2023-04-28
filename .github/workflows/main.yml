@@ -18,16 +18,16 @@ jobs:
         run: |
           npm install
           npm run build
-          cp dist /root/build-dist
+          git update-index --chmod=+x cp dist /root/build-dist
       - name: pull server-code
         run: |
           git clone https://github.com/Sensems/resource-server.git /root
           git checkout main
-          rm -rf /root/resource-server/view/*
+          git update-index --chmod=+x rm -rf /root/resource-server/view/*
       - name: move web build to server view
         run: |
-          cp -rf /root/build-dist /root/resource-server/view
-          cd /root/resource-server/view
+          git update-index --chmod=+x cp -rf /root/build-dist /root/resource-server/view
+          git update-index --chmod=+x cd /root/resource-server/view
           git commit -m 'update web project'
           git push
     
