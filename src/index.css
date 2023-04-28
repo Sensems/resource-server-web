@@ -1,0 +1,22 @@
+@import url('./assets/css/transition.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ellipsis_two {
+  display: -webkit-box;
+  white-space: wrap;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  word-break: break-all;
+  hyphens: auto;
+}
+
+.resource-wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-gap: 10px;
+  justify-items: center;
+}
