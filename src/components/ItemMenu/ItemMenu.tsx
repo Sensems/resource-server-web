@@ -31,7 +31,7 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props: MenuProps, ref) => {
 
   useEffect(() => {
     if (['ppt', 'word', 'excel'].includes(getFileType(ItemDetail.extname))) {
-      setFileMenu(['打开', '下载', '重命名', '复制链接', '删除', '预览'])
+      setFileMenu(['打开', '下载', '重命名', '复制链接', '预览'])
     }
   }, [])
 

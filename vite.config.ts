@@ -13,7 +13,7 @@ export default defineConfig(({ command, mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: 'http://file.tounick.com',
+          target: 'http://xx.xxx.com',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
