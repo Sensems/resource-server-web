@@ -22,7 +22,6 @@ jobs:
         run: |
           cd ..
           git clone https://github.com/Sensems/resource-server.git
-          git checkout main
           sudo rm -rf ./resource-server/view/*
       - name: move web build to server view
         run: |
