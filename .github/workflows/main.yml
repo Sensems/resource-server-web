@@ -27,6 +27,7 @@ jobs:
         run: |
           pwd
           ls
+          cd ..
           sudo cp -rf ./resource-server-web/dist ./resource-server/view
           cd ./resource-server
           git commit -m 'update web project'
