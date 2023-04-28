@@ -117,7 +117,7 @@ const Home: FunctionComponent = () => {
             // <Spin size="large" /> :
             <div id="resourcesWrap" className="resource-wrap w-full">
               {
-                (resourceData as API.Response.Resources).items.map((item, index) => {
+                (resourceData as API.Response.Resources).items.map((item) => {
                   return <ItemView key={item.modified_at} {...item} />
                 })
               }

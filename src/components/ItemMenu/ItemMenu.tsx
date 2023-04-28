@@ -23,7 +23,7 @@ interface MenuProps {
 const Menu = forwardRef<HTMLDivElement, MenuProps>((props: MenuProps, ref) => {
   const { type, ItemDetail, onMenuClick, onRename } = props;
   const [fileMenu, setFileMenu] = useState(['下载', '重命名', '复制链接', '删除'])
-  const [folderMenu] = useState(['重命名', '删除'])
+  const [folderMenu] = useState(['重命名'])
   const { path } = useParams()
   const [getParams] = useSearchParams()
   const dispatch = useDispatch();
