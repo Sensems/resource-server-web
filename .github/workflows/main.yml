@@ -12,6 +12,7 @@ jobs:
         uses: actions/setup-node@v2.5.2
         with:
           node-version: 16.13.2
+          cache: npm
       - name: checkout
         uses: actions/checkout@v3.5.2
       - name: npm install and build
@@ -27,7 +28,8 @@ jobs:
       - name: move web build to server view
         run: |
           sudo cp -rf /root/build-dist /root/resource-server/view
-          sudo cd /root/resource-server/view
+          sudo su
+          cd /root/resource-server/view
           git commit -m 'update web project'
           git push
     
