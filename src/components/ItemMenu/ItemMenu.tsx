@@ -22,7 +22,7 @@ interface MenuProps {
 
 const Menu = forwardRef<HTMLDivElement, MenuProps>((props: MenuProps, ref) => {
   const { type, ItemDetail, onMenuClick, onRename } = props;
-  const [fileMenu, setFileMenu] = useState(['下载', '重命名', '复制链接', '删除'])
+  const [fileMenu, setFileMenu] = useState(['下载', '重命名', '复制链接'])
   const [folderMenu] = useState(['重命名'])
   const { path } = useParams()
   const [getParams] = useSearchParams()
@@ -31,7 +31,7 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props: MenuProps, ref) => {
 
   useEffect(() => {
     if (['ppt', 'word', 'excel'].includes(getFileType(ItemDetail.extname))) {
-      setFileMenu(['打开', '下载', '重命名', '复制链接', '预览'])
+      setFileMenu(['打开', '下载', '重命名', '复制链接'])
     }
   }, [])
 
