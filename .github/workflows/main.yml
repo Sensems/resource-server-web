@@ -25,6 +25,8 @@ jobs:
           sudo rm -rf ./resource-server/view/*
       - name: move web build to server view
         run: |
+          pwd
+          ls
           sudo cp -rf ./resource-server-web/dist ./resource-server/view
           cd ./resource-server
           git commit -m 'update web project'
