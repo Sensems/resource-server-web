@@ -20,6 +20,7 @@ jobs:
           npm run build
       - name: pull server-code
         run: |
+          cd ..
           git clone https://github.com/Sensems/resource-server.git
           git checkout main
           sudo rm -rf ./resource-server/view/*
