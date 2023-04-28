@@ -18,7 +18,7 @@ jobs:
         run: |
           npm install
           npm run build
-          sudo cp dist /root/build-dist
+          sudo cp -rf dist /root/build-dist
       - name: pull server-code
         run: |
           git clone https://github.com/Sensems/resource-server.git /root
