@@ -1,7 +1,11 @@
 import { FunctionComponent, useState, useEffect } from "react";
-import { Button, Input, Breadcrumb } from 'antd';
-import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { useParams, useLocation, useSearchParams } from 'react-router-dom'
+import { Button, Input, Breadcrumb, Avatar, Popconfirm, Modal } from 'antd';
+import { PlusOutlined, SearchOutlined, TeamOutlined } from "@ant-design/icons";
+import { useParams, useLocation, useSearchParams, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { API } from "../../common/api/api.d";
+import { logout } from "../../common/api/api";
+import UserManage from "../UserManage/UserManage";
 
 interface OperationBarProps {
   onSearch?: (value: string) => void;
@@ -11,14 +15,16 @@ interface OperationBarProps {
 const OperationBar: FunctionComponent<OperationBarProps> = (props) => {
   const { onSearch, onAdd } = props;
   const [searchValue, setSearchValue] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [breadcrumb, setBreadcrumb] = useState<Array<{ title: string, href?: string }>>([])
   const { path } = useParams()
   const location = useLocation()
   const [getParams] = useSearchParams()
+  const userInfo = useSelector<{}, API.Response.UserInfo>((state: any) => state.user.userInfo);
+  const navigate = useNavigate();
 
   // 设置面包屑
   useEffect(() => {
-    console.log('location', location)
     if (path) {
       const pathSplitArr = path?.split('|')
       let arr = pathSplitArr!.map((item: string, index) => {
@@ -40,7 +46,7 @@ const OperationBar: FunctionComponent<OperationBarProps> = (props) => {
           href: `/view/${_arr.join('|')}`
         }
       })
-      setBreadcrumb([{ title: '根目录', href: '/view' }].concat(arr))
+      setBreadcrumb([{ title: '根目录', href: '/' }].concat(arr))
     }
     setSearchValue(getParams.getAll('search')[0] || '')
   }, [location])
@@ -57,6 +63,30 @@ const OperationBar: FunctionComponent<OperationBarProps> = (props) => {
     }
   }
 
+  // 退出登录
+  const userLogout = () => {
+    logout().then(() => {
+      localStorage.removeItem("userInfo")
+      navigate('/login', { replace: true })
+    })
+  }
+
+  const userBar = (
+    <div className="ml-3 flex items-center">
+      {userInfo.role == 'admin' && <Button className="mr-2" onClick={() => setIsModalOpen(!isModalOpen)} type="primary" shape="circle" icon={<TeamOutlined />} />}
+      <Popconfirm
+        title="退出登录"
+        onConfirm={userLogout}
+        okText="确认"
+        cancelText="取消"
+      >
+        <Avatar alt={userInfo.username} style={{ backgroundColor: '#f56a00', verticalAlign: 'middle', cursor: 'pointer' }}>
+          {userInfo.username.slice(0, 1)}
+        </Avatar>
+      </Popconfirm>
+    </div>
+  )
+
   return (
     <div className="operation-bar flex items-center justify-between px-5">
       <div>
@@ -64,11 +94,16 @@ const OperationBar: FunctionComponent<OperationBarProps> = (props) => {
           items={breadcrumb}
         />
       </div>
-      <div>
+      <div className="flex items-center">
         <Input value={searchValue} onInput={inputChange} onKeyUp={inputKeyUp} placeholder="请输入文件/文件后缀/文件夹名称" style={{ width: '300px' }} prefix={<SearchOutlined className="text-gray-500" />} />
         <Button onClick={() => onSearch ? onSearch(searchValue) : ''} className="m-2" type="primary" shape="circle" icon={<SearchOutlined />} />
         <Button onClick={() => onAdd ? onAdd() : ''} type="primary" shape="circle" icon={<PlusOutlined />} />
+        {userInfo.username && userBar}
       </div>
+
+      <Modal title="用户管理" onCancel={() => setIsModalOpen(false)} footer={null} open={isModalOpen} width="800px">
+        <UserManage />
+      </Modal>
     </div>
   );
 }

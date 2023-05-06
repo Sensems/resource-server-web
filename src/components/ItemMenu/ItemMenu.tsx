@@ -7,6 +7,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { getFileType } from "../../common/utils/utils.ts";
+import { useSelector } from 'react-redux'
 
 interface MenuProps {
   type: 'folder' | 'file';
@@ -19,11 +20,44 @@ interface MenuProps {
   onRename?: () => void;
 }
 
+interface MenuItem {
+  name: string;
+  disabled: boolean;
+}
+
 
 const Menu = forwardRef<HTMLDivElement, MenuProps>((props: MenuProps, ref) => {
   const { type, ItemDetail, onMenuClick, onRename } = props;
-  const [fileMenu, setFileMenu] = useState(['下载', '重命名', '复制链接'])
-  const [folderMenu] = useState(['重命名'])
+
+  const userInfo = useSelector<{}, API.Response.UserInfo>((state: any) => state.user.userInfo);
+  const [fileMenu, setFileMenu] = useState<MenuItem[]>([
+    {
+      name: '下载',
+      disabled: false
+    },
+    {
+      name: '复制链接',
+      disabled: false
+    },
+    {
+      name: '重命名',
+      disabled: true
+    },
+    {
+      name: '删除',
+      disabled: true
+    }
+  ])
+  const [folderMenu, setFolderMenu] = useState<MenuItem[]>([
+    {
+      name: '重命名',
+      disabled: true
+    },
+    {
+      name: '删除',
+      disabled: true
+    }
+  ])
   const { path } = useParams()
   const [getParams] = useSearchParams()
   const dispatch = useDispatch();
@@ -31,10 +65,25 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props: MenuProps, ref) => {
 
   useEffect(() => {
     if (['ppt', 'word', 'excel'].includes(getFileType(ItemDetail.extname))) {
-      setFileMenu(['打开', '下载', '重命名', '复制链接'])
+      setFileMenu([{ name: '打开', disabled: false }, ...fileMenu])
     }
   }, [])
 
+  useEffect(() => {
+    if (userInfo.role === 'admin') {
+      setFileMenu(fileMenu.map((item) => {
+        item.disabled = false
+        return item
+      }))
+      setFolderMenu(folderMenu.map((item) => {
+        item.disabled = false
+        return item
+      }))
+    }
+
+  }, [userInfo])
+
+  // 右击菜单
   const contextMenu = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -97,8 +146,9 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props: MenuProps, ref) => {
   }
 
   // 文件菜单点击事件
-  const fileMenuClick = (item: string) => {
-    switch (item) {
+  const fileMenuClick = (item: MenuItem) => {
+    if (item.disabled) return
+    switch (item.name) {
       case '打开':
         window.open(`https://view.officeapps.live.com/op/view.aspx?src=${ItemDetail.url}&wdOrigin=BROWSELINK`)
         break;
@@ -127,12 +177,13 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props: MenuProps, ref) => {
       default:
         break;
     }
-    if (onMenuClick !== undefined) onMenuClick(item) as any
+    if (onMenuClick !== undefined) onMenuClick(item.name) as any
   }
 
   // 文件夹菜单点击事件
-  const folderMenuClick = (item: string) => {
-    switch (item) {
+  const folderMenuClick = (item: MenuItem) => {
+    if (item.disabled) return
+    switch (item.name) {
       case '重命名':
         onRename && onRename()
         break;
@@ -149,18 +200,29 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props: MenuProps, ref) => {
       default:
         break;
     }
-    if (onMenuClick !== undefined) onMenuClick(item) as any
+    if (onMenuClick !== undefined) onMenuClick(item.name) as any
+  }
+
+  let menuList = []
+
+  if (type === 'file') {
+    menuList = fileMenu
+  } else {
+    menuList = folderMenu
   }
 
   return (
-    <div ref={ref} onContextMenu={contextMenu} className='menu p-1 rounded-xl absolute bg-white drop-shadow-lg z-10' style={{
+    <div ref={ref} onContextMenu={contextMenu} onDoubleClick={contextMenu} className='menu p-1 rounded-xl absolute bg-white drop-shadow-lg z-[99]' style={{
       left: props.position.x + 'px',
       top: props.position.y + 'px'
     }}>
-      {type === 'file' ? fileMenu.map((item, index) => {
-        return <div key={index} onClick={() => fileMenuClick(item)} className='menu-item cursor-pointer px-2 w-[100px] h-8 leading-8 text-stone-900 rounded-lg text-sm hover:bg-[#f5f5f6]'>{item}</div>
-      }) : folderMenu.map((item, index) => {
-        return <div key={index} onClick={() => folderMenuClick(item)} className='menu-item cursor-pointer px-2 w-[100px] h-8 leading-8 text-stone-900 rounded-lg text-sm hover:bg-[#f5f5f6]'>{item}</div>
+      {menuList.map((item, index) => {
+        return <div
+          key={index}
+          onClick={() => type == 'file' ? fileMenuClick(item) : folderMenuClick(item)}
+          className={`menu-item ${item.disabled ? 'cursor-no-drop' : 'cursor-pointer'} hover:bg-[#f5f5f6] px-2 w-[100px] h-8 leading-8 text-stone-900 rounded-lg text-sm `}>
+          {item.name}
+        </div>
       })}
     </div>
   );

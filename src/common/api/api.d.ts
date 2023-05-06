@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export namespace API {
   interface DefaultBody<T> {
     data: T;
@@ -35,6 +37,21 @@ export namespace API {
       files: string;
       dest_dir: string;
     }
+
+    interface Login {
+      username: string;
+      password: string;
+    }
+
+    interface DeleteUser {
+      username: string;
+    }
+
+    interface AddUser {
+      username: string;
+      password: string;
+      role: string;
+    }
   }
 
   namespace Response {
@@ -60,6 +77,14 @@ export namespace API {
       host: string;
       rootFolder: string;
     }
+
+    interface UserInfo {
+      username: string;
+      password: string;
+      role: string;
+    }
+
+    type UserList = UserInfo[];
   }
 }
 

@@ -84,7 +84,8 @@ const Home: FunctionComponent = () => {
       ...pageOptions,
       search: value
     })
-    navigate(`/${path}?page=${pageOptions.page}&limit=${pageOptions.limit}&search=${value}`, { replace: true })
+    console.log('path', path)
+    navigate(`/${path || ''}?page=${pageOptions.page}&limit=${pageOptions.limit}&search=${value}`, { replace: true })
   }
 
   // 点击添加按钮
@@ -118,7 +119,7 @@ const Home: FunctionComponent = () => {
             <div id="resourcesWrap" className="resource-wrap w-full">
               {
                 (resourceData as API.Response.Resources).items.map((item) => {
-                  return <ItemView key={item.modified_at} {...item} />
+                  return <ItemView key={item.path} {...item} />
                 })
               }
             </div>
