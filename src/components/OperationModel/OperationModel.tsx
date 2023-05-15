@@ -1,7 +1,7 @@
 import { FunctionComponent, ReactNode, useEffect, useState } from "react";
 import { Modal, Input, message } from 'antd'
 import Icon from "../Icon/Icon";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getResourseList } from "../../store/index.store";
 import { createFolder, renameFile, renameFolder } from "../../common/api/api";
@@ -27,6 +27,11 @@ const OperationModel: FunctionComponent<OperationModelProps> = (props) => {
   const { path } = useParams()
   const [getParams] = useSearchParams()
   const dispatch = useDispatch();
+  const location = useLocation()
+
+  useEffect(() => {
+    if (path) setCurrentDir(path.split('|').join('/'))
+  }, [location])
 
   useEffect(() => {
 
@@ -69,6 +74,9 @@ const OperationModel: FunctionComponent<OperationModelProps> = (props) => {
       } else {
         fileRename()
       }
+    } else if (type === 'upload') {
+      getResourseData()
+      onOk && onOk()
     }
   }
 
